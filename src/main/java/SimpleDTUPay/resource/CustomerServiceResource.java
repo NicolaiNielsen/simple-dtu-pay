@@ -48,6 +48,7 @@ public class CustomerServiceResource {
     @GET
     @Path("/{id}")
     public Response getCustomerById(@PathParam("id") String id) {
+        System.out.println("checking if customer with id " + id + " exists");
         return customerService.getCustomerById(id)
                 .map(customer -> Response.ok(customer).build())
                 .orElse(Response.status(Response.Status.NOT_FOUND).build());

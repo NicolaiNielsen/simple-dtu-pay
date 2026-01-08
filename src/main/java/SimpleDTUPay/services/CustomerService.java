@@ -35,6 +35,7 @@ public class CustomerService {
     }
     
     public Optional<Customer> getCustomerById(String id) {
+        System.out.println("Searching for customer with id " + id + " in  person registry");
         Person person = PersonRegistry.persons.get(id);
         if (person instanceof Customer) {
             return Optional.of((Customer) person);

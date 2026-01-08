@@ -1,8 +1,10 @@
 package SimpleDTUPay.resource;
 
 import java.net.URI;
+import java.util.Optional;
 
 import SimpleDTUPay.Payment;
+import SimpleDTUPay.PaymentResult;
 import SimpleDTUPay.model.Customer;
 import SimpleDTUPay.model.Merchant;
 import SimpleDTUPay.services.CustomerService;
@@ -39,7 +41,27 @@ public class PaymentServiceResource {
         if (payment == null || payment.getMerchantId() == null || payment.getCustomerId() == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
+
+        CustomerService customerService = new CustomerService();
+        MerchantService merchantService = new MerchantService();
         
+        Optional<Customer> customer = customerService.getCustomerById(payment.getCustomerId());
+        Optional<Merchant> merchant = merchantService.getMerchantById(payment.getMerchantId());
+        System.out.println("Validating payment: customer " + payment.getCustomerId() + ", merchant " + payment.getMerchantId());
+        if (!customer.isPresent()) {
+            System.out.println("Customer with id " + payment.getCustomerId() + " is unknown");
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("customer with id \"" + payment.getCustomerId() + "\" is unknown")
+                    .build();
+        }
+
+        if (!merchant.isPresent()) {
+            System.out.println("Merchant with id " + payment.getMerchantId() + " is unknown");
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("merchant with id \"" + payment.getMerchantId() + "\" is unknown")
+                    .build();
+        }
+
         String id = paymentService.createPayment(payment);
         URI location = uriInfo.getAbsolutePathBuilder().path(id).build();
         return Response.created(location).entity(id).build();
@@ -57,4 +79,5 @@ public class PaymentServiceResource {
                 .map(payment -> Response.ok(payment).build())
                 .orElse(Response.status(Response.Status.NOT_FOUND).build());
     }
+
 }

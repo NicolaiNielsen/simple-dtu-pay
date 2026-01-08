@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import SimpleDTUPay.Payment;
+import SimpleDTUPay.PaymentResult;
 import SimpleDTUPay.PaymentRegistry;
 import SimpleDTUPay.PersonRegistry;
 import SimpleDTUPay.model.Merchant;
