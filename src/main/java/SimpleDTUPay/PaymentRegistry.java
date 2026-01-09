@@ -4,7 +4,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import SimpleDTUPay.model.Customer;
 import SimpleDTUPay.model.Merchant;
-import SimpleDTUPay.model.Person;
 
 public class PaymentRegistry {
 
@@ -12,14 +11,18 @@ public class PaymentRegistry {
 
     static {
         Merchant merchant = new Merchant();
-        merchant.setName("Marocco Ltd.");
+        merchant.setFirstName("Marocco Ltd.");
+        merchant.setLastName("Company");
+        merchant.setCPR("123456-7890");
         merchant.setId();
-        PersonRegistry.persons.put(UUID.randomUUID().toString(), merchant);
+        PersonRegistry.people.put(merchant.getId(), merchant);
 
         Customer customer = new Customer();
         customer.setId();
-        customer.setName("Obama bin badem");
-        PersonRegistry.persons.put(UUID.randomUUID().toString(), customer);
+        customer.setFirstName("Obama bin badem");
+        customer.setLastName("Badem");
+        customer.setCPR("987654-3210");
+        PersonRegistry.people.put(customer.getId(), customer);
 
         Payment payment = new Payment();
         payment.setId();

@@ -4,10 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import SimpleDTUPay.PersonRegistry;
 import SimpleDTUPay.model.Customer;
-import SimpleDTUPay.model.Person;
 
 public class CustomerService {
 
@@ -16,30 +14,42 @@ public class CustomerService {
 
     public String createCustomer(Customer customer) {
         Customer newCustomer = new Customer();
-        newCustomer.setName(customer.getName());
+        newCustomer.setFirstName(customer.getFirstName());
+        newCustomer.setLastName(customer.getLastName());
+        newCustomer.setCPR(customer.getCPR());
         newCustomer.setId();
         String id = newCustomer.getId();
-        PersonRegistry.persons.put(id, newCustomer);
+        PersonRegistry.people.put(id, newCustomer);
         return id;
     }
 
     public java.util.Collection<Customer> findAll() {
         Collection<Customer> customers = new java.util.ArrayList<>();
 
-        for (Person person : PersonRegistry.persons.values()) {
-            if (person instanceof Customer) {
-                customers.add((Customer) person);
+        for (Object object : PersonRegistry.people.values()) {
+            if (object instanceof Customer) {
+                customers.add((Customer) object);
             }
         }
         return customers;
     }
-    
+
     public Optional<Customer> getCustomerById(String id) {
         System.out.println("Searching for customer with id " + id + " in  person registry");
-        Person person = PersonRegistry.persons.get(id);
-        if (person instanceof Customer) {
-            return Optional.of((Customer) person);
+        Object object = PersonRegistry.people.get(id);
+        if (object instanceof Customer) {
+            return Optional.of((Customer) object);
         }
         return Optional.empty();
     }
+
+    public Optional<Customer> updateCustomerBankAccount(String id, Customer customer) {
+
+        return Optional.ofNullable(
+                (Customer) PersonRegistry.people.computeIfPresent(id, (k, existing) -> {
+                    ((Customer) existing).setBankAccountId(customer.getBankAccountId());
+                    return existing;
+                }));
+    }
+
 }

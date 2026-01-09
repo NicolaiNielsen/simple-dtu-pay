@@ -9,6 +9,7 @@ import SimpleDTUPay.services.MerchantService;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -28,13 +29,13 @@ public class MerchantServiceResource {
 
     @Context
     UriInfo uriInfo;
-    
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createMerchant(Merchant merchant) {
-        System.out.println("Received merchant creation request for: " + merchant.getName());
-        if (merchant == null || merchant.getName() == null) {
+        System.out.println("Received merchant creation request for: " + merchant.getFirstName());
+        if (merchant == null || merchant.getFirstName() == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         String id = merchantService.createMerchant(merchant);
@@ -52,6 +53,17 @@ public class MerchantServiceResource {
     public Response getMerchantById(@PathParam("id") String id) {
         return merchantService.getMerchantById(id)
                 .map(merchant -> Response.ok(merchant).build())
+                .orElse(Response.status(Response.Status.NOT_FOUND).build());
+    }
+
+    @PUT
+    @Path("{id}/bankaccount")
+    public Response changeCity(@PathParam("id") String id, Merchant merchant) {
+        if (merchant == null || merchant.getBankAccountId() == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+        return merchantService.updateMerchantBankAccount(id, merchant)
+                .map(s -> Response.ok(s).build())
                 .orElse(Response.status(Response.Status.NOT_FOUND).build());
     }
 }
